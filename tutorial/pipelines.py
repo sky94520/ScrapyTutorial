@@ -1,5 +1,5 @@
-import pymongo
 from scrapy.exceptions import DropItem
+import json
 
 
 class TextPipeline(object):
@@ -15,26 +15,25 @@ class TextPipeline(object):
             return DropItem('Missing Text')
 
 
-class MongoPipeline(object):
-    def __init__(self, mongo_uri, mongo_db):
-        self.mongo_uri = mongo_uri
-        self.mongo_db = mongo_db
+class JsonPipeline(object):
+    def __init__(self, filename):
+        self.filename = filename
+        self.json_data = []
+        self.file = None
 
     @classmethod
     def from_crawler(cls, crawler):
         return cls(
-            mongo_uri=crawler.settings.get('MONGO_URI'),
-            mongo_db=crawler.settings.get('MONGO_DB')
+            filename=crawler.settings.get('JSON_FILENAME')
         )
 
     def open_spider(self, spider):
-        self.client = pymongo.MongoClient(self.mongo_uri)
-        self.db = self.client[self.mongo_db]
+        self.file = open(self.filename, 'w', encoding='utf-8')
 
     def process_item(self, item, spider):
-        name = item.__class__.__name__
-        self.db[name].insert(dict(item))
+        self.json_data.append(dict(item))
         return item
 
     def close_spider(self, spider):
-        self.client.close()
+        self.file.write(json.dumps(self.json_data, ensure_ascii=False, indent=2))
+        self.file.close()

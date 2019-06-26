@@ -65,7 +65,7 @@ ROBOTSTXT_OBEY = True
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     'tutorial.pipelines.TextPipeline': 300,
-    'tutorial.pipelines.MongoPipeline': 400,
+    'tutorial.pipelines.JsonPipeline': 400,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -89,5 +89,4 @@ ITEM_PIPELINES = {
 # HTTPCACHE_IGNORE_HTTP_CODES = []
 # HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
-MONGO_URI = 'localhost'
-MONGO_DB = 'tutorial'
+JSON_FILENAME = 'quotes.json'
